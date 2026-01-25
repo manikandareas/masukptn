@@ -1,0 +1,5 @@
+export { StatsOverview } from '@/features/analytics/components/stats-overview'
+export { SubtestPerformance } from '@/features/analytics/components/subtest-performance'
+export { TrendChart } from '@/features/analytics/components/trend-chart'
+export { RecommendationsPanel } from '@/features/analytics/components/recommendations-panel'
+export { RecentAttempts } from '@/features/analytics/components/recent-attempts'
