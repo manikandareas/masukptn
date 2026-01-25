@@ -12,7 +12,7 @@ export async function getUser() {
 export async function requireAuth() {
   const user = await getUser();
   if (!user) {
-    redirect("/login");
+    redirect("/signin");
   }
   return user;
 }
