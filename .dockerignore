@@ -3,7 +3,6 @@ node_modules
 npm-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-bun.lockb
 
 # Next.js build artifacts
 .next/
