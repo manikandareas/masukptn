@@ -1,0 +1,50 @@
+# Fly.io Application Configuration
+app = "masukptn"
+primary_region = "sin"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[processes]
+  app = "node server.js"
+
+# HTTP Service Configuration
+[[services]]
+  protocol = "tcp"
+  internal_port = 3000
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  # TCP health check
+  [[services.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
+    grace_period = "5s"
+    restart_limit = 0
+
+  # HTTP health check
+  [[services.http_checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/"
+    protocol = "http"
+
+# VM Configuration
+[vm]
+  cpu = "shared"
+  memory = "512mb"
