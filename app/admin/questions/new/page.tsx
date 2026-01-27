@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { AdminQuestionNewPage } from "@/features/admin/components/admin-question-new-page";
 import { getAdminSubtestsAction } from "@/features/admin/server/get-admin-subtests";
 import { requireAdminUserPage } from "@/features/admin/server/require-admin-user";
 import { getQueryClient } from "@/lib/react-query/client";
+
+export const metadata: Metadata = {
+  title: "Buat Soal Baru | MasukPTN",
+  description: "Buat soal baru untuk bank soal SNMPTN.",
+};
 
 export default async function AdminQuestionNewRoute() {
   await requireAdminUserPage();

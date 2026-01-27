@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { TryoutSessionPage } from "@/features/tryout/components/tryout-session-page";
 import { getTryoutSession } from "@/features/tryout/server/get-tryout-session";
 import { requireAuth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/react-query/client";
+
+export const metadata: Metadata = {
+  title: "Kerjakan Tryout | MasukPTN",
+  description: "Kerjakan soal tryout SNMPTN Anda.",
+};
 
 type TryoutSessionRouteProps = {
   params: Promise<{ attemptId: string }>;

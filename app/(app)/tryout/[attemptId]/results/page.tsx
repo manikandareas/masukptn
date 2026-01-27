@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { TryoutResultsPage } from "@/features/tryout/components/tryout-results-page";
 import { getTryoutSession } from "@/features/tryout/server/get-tryout-session";
 import { requireAuth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/react-query/client";
+
+export const metadata: Metadata = {
+  title: "Hasil Tryout | MasukPTN",
+  description: "Lihat hasil dan analisis performa tryout Anda.",
+};
 
 type TryoutResultsRouteProps = {
   params: Promise<{ attemptId: string }>;

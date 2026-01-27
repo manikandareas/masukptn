@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { BlueprintDetailPage } from "@/features/tryout/components/blueprint-detail-page";
@@ -8,6 +9,11 @@ import { getQueryClient } from "@/lib/react-query/client";
 
 type BlueprintDetailRouteProps = {
   params: Promise<{ blueprintId: string }>;
+};
+
+export const metadata: Metadata = {
+  title: "Detail Tryout | MasukPTN",
+  description: "Lihat detail dan ikuti tryout SNMPTN.",
 };
 
 export default async function BlueprintDetailRoute({ params }: BlueprintDetailRouteProps) {

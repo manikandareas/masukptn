@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { TryoutCountdownPage } from "@/features/tryout/components/tryout-countdown-page";
 import { getTryoutSession } from "@/features/tryout/server/get-tryout-session";
 import { requireAuth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/react-query/client";
+
+export const metadata: Metadata = {
+  title: "Persiapan Tryout | MasukPTN",
+  description: "Persiapkan diri sebelum memulai tryout.",
+};
 
 type TryoutCountdownRouteProps = {
   params: Promise<{ attemptId: string }>;

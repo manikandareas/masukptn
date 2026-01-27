@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { AdminQuestionSetEditPage } from "@/features/admin/components/admin-question-set-edit-page";
@@ -9,6 +10,11 @@ import { getQueryClient } from "@/lib/react-query/client";
 
 type AdminQuestionSetEditRouteProps = {
   params: Promise<{ id: string }>;
+};
+
+export const metadata: Metadata = {
+  title: "Edit Question Set | MasukPTN",
+  description: "Edit detail dan soal dalam question set.",
 };
 
 export default async function AdminQuestionSetEditRoute({ params }: AdminQuestionSetEditRouteProps) {

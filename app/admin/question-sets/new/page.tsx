@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { AdminQuestionSetNewPage } from "@/features/admin/components/admin-question-set-new-page";
@@ -5,6 +6,11 @@ import { getAdminExamsAction } from "@/features/admin/server/get-admin-exams";
 import { getAdminSubtestsForSetsAction } from "@/features/admin/server/get-admin-subtests-for-sets";
 import { requireAdminUserPage } from "@/features/admin/server/require-admin-user";
 import { getQueryClient } from "@/lib/react-query/client";
+
+export const metadata: Metadata = {
+  title: "Buat Question Set Baru | MasukPTN",
+  description: "Buat question set baru untuk tryout atau latihan.",
+};
 
 export default async function AdminQuestionSetNewRoute() {
   await requireAdminUserPage();

@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
+
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { PracticeSetDetailPage } from "@/features/practice/components/practice-set-detail-page";
 import { getPracticeCatalog } from "@/features/practice/server/get-practice-catalog";
 import { requireAuth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/react-query/client";
+
+export const metadata: Metadata = {
+  title: "Latihan Soal | MasukPTN",
+  description: "Mulai latihan soal untuk materi tertentu.",
+};
 
 export default async function PracticeSetRoute({
   params,

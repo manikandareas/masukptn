@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { AdminQuestionSetsPage } from "@/features/admin/components/admin-question-sets-page";
@@ -10,6 +11,11 @@ import { getQueryClient } from "@/lib/react-query/client";
 const defaultFilters = {
   limit: 20,
   offset: 0,
+};
+
+export const metadata: Metadata = {
+  title: "Kelola Question Set | MasukPTN",
+  description: "Lihat dan kelola question set untuk tryout dan latihan.",
 };
 
 export default async function AdminQuestionSetsRoute() {
