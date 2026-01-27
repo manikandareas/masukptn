@@ -1,59 +1,11 @@
-"use client";
+import type { Metadata } from "next";
+import LandingPageContent from "@/features/landing/components/landing-page-content";
 
-import { useEffect, useRef } from "react";
-
-import { CTASection } from "@/features/landing/components/cta-section";
-import { FeatureSections } from "@/features/landing/components/feature-sections";
-import { FeaturesGrid } from "@/features/landing/components/features-grid";
-import { Footer } from "@/features/landing/components/footer";
-import { HeroSection } from "@/features/landing/components/hero-section";
-import { HowItWorks } from "@/features/landing/components/how-it-works";
-import { Navbar } from "@/features/landing/components/navbar";
-import { SocialProofBanner } from "@/features/landing/components/social-proof-banner";
-import { Testimonials } from "@/features/landing/components/testimonials";
-
-import type LocomotiveScroll from "locomotive-scroll";
+export const metadata: Metadata = {
+  title: "MasukPTN - Platform Persiapan SNMPTN",
+  description: "Platform persiapan SNMPTN dengan tryout, latihan soal, dan analisis performa.",
+};
 
 export default function LandingPage() {
-  const scrollRef = useRef<LocomotiveScroll | null>(null);
-
-  useEffect(() => {
-    let isActive = true;
-
-    import("locomotive-scroll").then((LocomotiveScrollModule) => {
-      if (!isActive) return;
-      const container = document.querySelector("[data-scroll-container]");
-      if (!container) return;
-
-      type LocomotiveConstructor = new (options: Record<string, unknown>) => LocomotiveScroll;
-      const LocomotiveScrollCtor =
-        LocomotiveScrollModule.default as unknown as LocomotiveConstructor;
-
-      scrollRef.current = new LocomotiveScrollCtor({
-        el: container as HTMLElement,
-      });
-    });
-
-    return () => {
-      isActive = false;
-      scrollRef.current?.destroy();
-      scrollRef.current = null;
-    };
-  }, []);
-
-  return (
-    <div className="flex min-h-screen flex-col" data-scroll-container>
-      <Navbar />
-      <main className="flex-1">
-        <HeroSection />
-        <SocialProofBanner />
-        <FeaturesGrid />
-        <FeatureSections />
-        <HowItWorks />
-        <Testimonials />
-        <CTASection />
-      </main>
-      <Footer />
-    </div>
-  );
+  return <LandingPageContent />;
 }
