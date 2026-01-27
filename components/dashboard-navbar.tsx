@@ -208,41 +208,32 @@ export function DashboardNavbar({
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <Button variant="outline" size="icon-sm" className="rounded-full" />
+                <Button variant="ghost" size="icon" className="gap-2 px-2" />
               }
-              aria-label="Open profile menu"
             >
-              <Avatar className="size-8">
-                <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
+              <Avatar size="sm">
+                <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="text-xs">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                    session
-                  </span>
-                  <span className="truncate text-xs text-foreground">{email ?? "SESSION_ACTIVE"}</span>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
+            <DropdownMenuContent align="end" className="min-w-48">
               <DropdownMenuGroup>
-                <DropdownMenuItem onSelect={() => router.push("/dashboard")}>
-                  Dashboard
+                <DropdownMenuLabel className="text-[11px] uppercase tracking-[0.24em]">
+                  Session
+                </DropdownMenuLabel>
+                <DropdownMenuItem
+                  disabled
+                  className="text-xs text-muted-foreground"
+                >
+                  {email ?? "SESSION_ACTIVE"}
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => router.push("/practice")}>
-                  Practice
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => router.push("/tryout")}>
-                  Tryout
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              {onSignOut ? (
-                <DropdownMenuItem onSelect={onSignOut} disabled={isSigningOut}>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={onSignOut}
+                  disabled={!onSignOut || isSigningOut}
+                >
                   {isSigningOut ? "Signing out..." : "Sign out"}
                 </DropdownMenuItem>
-              ) : null}
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
