@@ -57,6 +57,14 @@ export const contentStatusEnum = pgEnum("content_status", [
   "published",
 ]);
 
+export const importStatusEnum = pgEnum("import_status", [
+  "queued",
+  "processing",
+  "ready",
+  "failed",
+  "saved",
+]);
+
 // ============================================================================
 // HELPER: Timestamps
 // ============================================================================
@@ -305,6 +313,105 @@ export const questionSetItems = pgTable(
 );
 
 // ============================================================================
+// QUESTION IMPORTS (PDF -> OCR -> AI Drafts)
+// ============================================================================
+
+export const questionImports = pgTable(
+  "question_imports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    createdBy: uuid("created_by")
+      .notNull()
+      .references(() => profiles.id, { onDelete: "cascade" }),
+
+    // Source file
+    sourceFilename: varchar("source_filename", { length: 255 }).notNull(),
+    sourceMimeType: varchar("source_mime_type", { length: 120 }).notNull(),
+    sourceFileSize: integer("source_file_size").notNull(),
+    storageBucket: varchar("storage_bucket", { length: 120 }).notNull(),
+    storagePath: text("storage_path").notNull(),
+
+    // Processing state
+    status: importStatusEnum("status").default("queued").notNull(),
+    errorMessage: text("error_message"),
+    ocrText: text("ocr_text"),
+    ocrMetadata: jsonb("ocr_metadata").$type<{
+      pageCount?: number;
+      truncated?: boolean;
+    }>(),
+    processedAt: timestamp("processed_at", { withTimezone: true }),
+
+    // Draft question set metadata
+    draftExamId: uuid("draft_exam_id").references(() => exams.id, {
+      onDelete: "set null",
+    }),
+    draftSubtestId: uuid("draft_subtest_id").references(() => subtests.id, {
+      onDelete: "set null",
+    }),
+    draftName: varchar("draft_name", { length: 255 }),
+    draftDescription: text("draft_description"),
+
+    // Finalization
+    savedQuestionSetId: uuid("saved_question_set_id").references(
+      () => questionSets.id,
+      { onDelete: "set null" },
+    ),
+    savedAt: timestamp("saved_at", { withTimezone: true }),
+
+    ...timestamps,
+  },
+  (table) => [
+    index("question_imports_status_idx").on(table.status),
+    index("question_imports_created_by_idx").on(table.createdBy),
+    index("question_imports_created_at_idx").on(table.createdAt),
+  ],
+);
+
+export const questionImportQuestions = pgTable(
+  "question_import_questions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    importId: uuid("import_id")
+      .notNull()
+      .references(() => questionImports.id, { onDelete: "cascade" }),
+    subtestId: uuid("subtest_id").references(() => subtests.id, {
+      onDelete: "set null",
+    }),
+
+    // Content (markdown)
+    stimulus: text("stimulus"),
+    stem: text("stem").notNull(),
+    options: jsonb("options").$type<string[]>(),
+    complexOptions:
+      jsonb("complex_options").$type<
+        Array<{ statement: string; choices: string[] }>
+      >(),
+
+    // Answer & Explanation
+    questionType: questionTypeEnum("question_type").notNull(),
+    answerKey: jsonb("answer_key").$type<AnswerKey>().notNull(),
+    explanation: jsonb("explanation").$type<Explanation>().notNull(),
+
+    // Metadata
+    difficulty: difficultyEnum("difficulty").default("medium"),
+    topicTags: jsonb("topic_tags").$type<string[]>().default([]),
+    sourceYear: integer("source_year"),
+    sourceInfo: varchar("source_info", { length: 255 }),
+    sortOrder: integer("sort_order").default(0).notNull(),
+
+    ...timestamps,
+  },
+  (table) => [
+    index("question_import_questions_import_idx").on(table.importId),
+    index("question_import_questions_subtest_idx").on(table.subtestId),
+    index("question_import_questions_sort_idx").on(
+      table.importId,
+      table.sortOrder,
+    ),
+  ],
+);
+
+// ============================================================================
 // ATTEMPTS (Practice/Tryout Sessions)
 // ============================================================================
 
@@ -431,6 +538,7 @@ export const attemptItems = pgTable(
 
 export const profilesRelations = relations(profiles, ({ many }) => ({
   attempts: many(attempts),
+  questionImports: many(questionImports),
 }));
 
 export const examsRelations = relations(exams, ({ many }) => ({
@@ -447,6 +555,7 @@ export const subtestsRelations = relations(subtests, ({ one, many }) => ({
   questions: many(questions),
   blueprintSections: many(blueprintSections),
   questionSets: many(questionSets),
+  questionImportQuestions: many(questionImportQuestions),
   attempts: many(attempts),
 }));
 
@@ -508,6 +617,43 @@ export const questionSetItemsRelations = relations(
     question: one(questions, {
       fields: [questionSetItems.questionId],
       references: [questions.id],
+    }),
+  }),
+);
+
+export const questionImportsRelations = relations(
+  questionImports,
+  ({ one, many }) => ({
+    createdByUser: one(profiles, {
+      fields: [questionImports.createdBy],
+      references: [profiles.id],
+    }),
+    draftExam: one(exams, {
+      fields: [questionImports.draftExamId],
+      references: [exams.id],
+    }),
+    draftSubtest: one(subtests, {
+      fields: [questionImports.draftSubtestId],
+      references: [subtests.id],
+    }),
+    savedQuestionSet: one(questionSets, {
+      fields: [questionImports.savedQuestionSetId],
+      references: [questionSets.id],
+    }),
+    questions: many(questionImportQuestions),
+  }),
+);
+
+export const questionImportQuestionsRelations = relations(
+  questionImportQuestions,
+  ({ one }) => ({
+    import: one(questionImports, {
+      fields: [questionImportQuestions.importId],
+      references: [questionImports.id],
+    }),
+    subtest: one(subtests, {
+      fields: [questionImportQuestions.subtestId],
+      references: [subtests.id],
     }),
   }),
 );
