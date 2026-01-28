@@ -15,6 +15,13 @@
       "when": 1769609777422,
       "tag": "0001_busy_sasquatch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769613480526,
+      "tag": "0002_perpetual_newton_destine",
+      "breakpoints": true
     }
   ]
 }
