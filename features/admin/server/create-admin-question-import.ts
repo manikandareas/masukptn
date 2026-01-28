@@ -2,7 +2,12 @@
 
 import { randomUUID } from "crypto";
 
-import { insertQuestionImport } from "@/data-access/queries/question-imports";
+import {
+  getQuestionImportById,
+  insertQuestionImport,
+  updateQuestionImportById,
+} from "@/data-access/queries/question-imports";
+import { enqueueQuestionImport } from "@/features/admin/server/enqueue-question-import";
 import { questionImportFormSchema } from "@/features/admin/types";
 import { getAdminUserOrThrow } from "@/features/admin/server/require-admin-user";
 import { serializeQuestionImportSummary } from "@/features/admin/server/serializers";
@@ -77,5 +82,19 @@ export async function createAdminQuestionImportAction(formData: FormData) {
     draftDescription: parsed.description ?? null,
   });
 
-  return serializeQuestionImportSummary(created);
+  try {
+    const deduplicationId = `import-${created.id}`;
+    await enqueueQuestionImport({
+      importId: created.id,
+      deduplicationId,
+    });
+  } catch (error) {
+    await updateQuestionImportById(created.id, {
+      status: "failed",
+      errorMessage: error instanceof Error ? error.message : "Queue error",
+    });
+  }
+
+  const refreshed = await getQuestionImportById(created.id);
+  return serializeQuestionImportSummary(refreshed ?? created);
 }

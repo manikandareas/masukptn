@@ -51,7 +51,7 @@ export async function finalizeAdminQuestionImportAction(input: { id: string }) {
     const [createdSet] = await tx
       .insert(questionSets)
       .values({
-        examId: importRecord.draftExamId,
+        examId: importRecord.draftExamId!,
         subtestId: importRecord.draftSubtestId ?? null,
         name: setName,
         description: importRecord.draftDescription ?? null,
@@ -75,7 +75,7 @@ export async function finalizeAdminQuestionImportAction(input: { id: string }) {
           topicTags: question.topicTags ?? [],
           sourceYear: question.sourceYear ?? null,
           sourceInfo: question.sourceInfo ?? null,
-          status: "draft",
+          status: "draft" as const,
         })),
       )
       .returning();
