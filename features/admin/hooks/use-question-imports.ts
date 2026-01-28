@@ -11,10 +11,10 @@ export function useQuestionImports(filters: QuestionImportFilters) {
   return useQuery({
     queryKey: [...questionImportsQueryKey, filters],
     queryFn: () => getAdminQuestionImportsAction(filters),
-    refetchInterval: (data) => {
-      const imports = data?.imports ?? [];
-      const hasProcessing = imports.some((item) =>
-        ["queued", "processing"].includes(item.status),
+    refetchInterval: (query) => {
+      const imports = query.state.data?.imports ?? [];
+      const hasProcessing = imports.some(
+        (item) => item.status === "queued" || item.status === "processing",
       );
       return hasProcessing ? 3000 : false;
     },

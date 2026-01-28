@@ -50,6 +50,7 @@ export function useProcessQuestionImport() {
     mutationFn: processImport,
     onSuccess: (data) => {
       if (data?.id) {
+        queryClient.setQueryData([...questionImportQueryKey, data.id], data);
         queryClient.invalidateQueries({
           queryKey: [...questionImportQueryKey, data.id],
         });
