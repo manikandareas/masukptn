@@ -330,6 +330,8 @@ export const questionImports = pgTable(
     sourceFileSize: integer("source_file_size").notNull(),
     storageBucket: varchar("storage_bucket", { length: 120 }).notNull(),
     storagePath: text("storage_path").notNull(),
+    queueMessageId: varchar("queue_message_id", { length: 255 }),
+    queueDeduplicationId: varchar("queue_deduplication_id", { length: 255 }),
 
     // Processing state
     status: importStatusEnum("status").default("queued").notNull(),

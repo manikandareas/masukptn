@@ -92,7 +92,7 @@ export async function runMistralOcr(params: {
         type: "document_url",
         document_url: params.documentUrl,
       },
-      include_image_base64: false,
+      include_image_base64: true,
     }),
   });
 
