@@ -6,6 +6,7 @@ import {
   File01Icon,
   Folder01Icon,
   Home01Icon,
+  Upload04Icon,
   Terminal,
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -55,6 +56,12 @@ const adminNavItems = [
     to: '/admin/question-sets' as const,
     icon: Folder01Icon,
     description: 'Curate practice sets',
+  },
+  {
+    label: 'Imports',
+    to: '/admin/imports' as const,
+    icon: Upload04Icon,
+    description: 'OCR & AI imports',
   },
 ]
 

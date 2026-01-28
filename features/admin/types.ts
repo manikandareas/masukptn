@@ -120,6 +120,31 @@ export const questionSetFiltersSchema = z.object({
   offset: z.number().int().min(0).default(0),
 })
 
+export const questionImportStatusSchema = z.enum([
+  'queued',
+  'processing',
+  'ready',
+  'failed',
+  'saved',
+])
+
+export const questionImportFiltersSchema = z.object({
+  status: questionImportStatusSchema.optional(),
+  limit: z.number().int().min(1).max(100).default(20),
+  offset: z.number().int().min(0).default(0),
+})
+
+export const questionImportFormSchema = z.object({
+  examId: z.string().uuid('Invalid exam ID'),
+  subtestId: z.string().uuid().nullable().optional(),
+  name: z.string().min(1, 'Name is required').max(255),
+  description: z.string().max(1000).nullable().optional(),
+})
+
+export const updateQuestionImportSchema = questionImportFormSchema.partial().extend({
+  id: z.string().uuid(),
+})
+
 // ============================================================================
 // Delete Schema
 // ============================================================================
@@ -147,6 +172,10 @@ export type QuestionSetFormData = z.infer<typeof questionSetSchema>
 export type UpdateQuestionSetData = z.infer<typeof updateQuestionSetSchema>
 export type QuestionFilters = z.infer<typeof questionFiltersSchema>
 export type QuestionSetFilters = z.infer<typeof questionSetFiltersSchema>
+export type QuestionImportFilters = z.infer<typeof questionImportFiltersSchema>
+export type QuestionImportFormData = z.infer<typeof questionImportFormSchema>
+export type UpdateQuestionImportData = z.infer<typeof updateQuestionImportSchema>
+export type QuestionImportStatus = z.infer<typeof questionImportStatusSchema>
 
 
 // ============================================================================
