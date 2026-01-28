@@ -137,7 +137,7 @@ export function QuestionImportForm({
           <FieldLabel>Exam</FieldLabel>
           <Select
             value={examId || ""}
-            onValueChange={(value) => setValue("examId", value, { shouldValidate: true })}
+            onValueChange={(value) => setValue("examId", value ?? "", { shouldValidate: true })}
             disabled={isSubmitting}
           >
             <SelectTrigger>

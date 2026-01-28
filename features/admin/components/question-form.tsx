@@ -45,7 +45,7 @@ export type SubtestOption = {
   id: string
   code: string
   name: string
-  exam: {
+  exam?: {
     id: string
     code: string
     name: string
@@ -183,7 +183,7 @@ export function QuestionForm({
 
   // Group subtests by exam
   const subtestsByExam = subtests.reduce((acc, subtest) => {
-    const examName = subtest.exam.name
+    const examName = subtest.exam?.name ?? "Unknown Exam"
     if (!acc[examName]) {
       acc[examName] = []
     }

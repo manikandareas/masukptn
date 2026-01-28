@@ -19,10 +19,7 @@ import {
   QuestionImportList,
 } from "@/features/admin/components";
 import { useQuestionImports } from "@/features/admin/hooks/use-question-imports";
-import {
-  useCreateQuestionImport,
-  useProcessQuestionImport,
-} from "@/features/admin/hooks/use-question-import-mutations";
+import { useCreateQuestionImport } from "@/features/admin/hooks/use-question-import-mutations";
 import { useAdminExams } from "@/features/admin/hooks/use-question-sets";
 import { useAdminSubtests } from "@/features/admin/hooks/use-questions";
 import type { QuestionImportFilters } from "@/features/admin/types";
@@ -41,7 +38,6 @@ export function AdminQuestionImportsPage() {
   const { data: subtests = [] } = useAdminSubtests();
 
   const createImport = useCreateQuestionImport();
-  const processImport = useProcessQuestionImport();
 
   const imports = data?.imports ?? [];
   const total = data?.total ?? 0;
@@ -58,8 +54,11 @@ export function AdminQuestionImportsPage() {
   const handleCreateImport = async (formData: FormData) => {
     try {
       const created = await createImport.mutateAsync(formData);
-      processImport.mutate(created.id);
-      toast.success("Import created. Processing started.");
+      if (created.status === "failed") {
+        toast.error("Import created but queue failed. Please reprocess.");
+      } else {
+        toast.success("Import created. Processing queued.");
+      }
       router.push(`/admin/imports/${created.id}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to create import");

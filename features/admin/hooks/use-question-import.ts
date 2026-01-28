@@ -11,8 +11,9 @@ export function useQuestionImport(id: string) {
     queryKey: [...questionImportQueryKey, id],
     queryFn: () => getAdminQuestionImportAction({ id }),
     enabled: Boolean(id),
-    refetchInterval: (data) => {
-      const status = data?.status;
+    refetchIntervalInBackground: true,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
       return status === "queued" || status === "processing" ? 3000 : false;
     },
   });

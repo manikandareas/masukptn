@@ -167,17 +167,27 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
               <Badge variant={statusBadgeVariant[importStatus]}>
                 {importStatus}
               </Badge>
-              {importStatus === "queued" || importStatus === "failed" ? (
+              {importStatus === "queued" && (
+                <Button size="sm" variant="outline" disabled>
+                  Queued...
+                </Button>
+              )}
+              {importStatus === "processing" && (
+                <Button size="sm" variant="outline" disabled>
+                  Processing...
+                </Button>
+              )}
+              {importStatus === "failed" && (
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={handleProcess}
                   disabled={processImport.isPending}
                 >
-                  {processImport.isPending ? "Processing..." : "Start Processing"}
+                  {processImport.isPending ? "Processing..." : "Retry Processing"}
                 </Button>
-              ) : null}
-              {importStatus === "ready" ? (
+              )}
+              {importStatus === "ready" && (
                 <Button
                   size="sm"
                   onClick={handleFinalize}
@@ -185,14 +195,14 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
                 >
                   {finalizeImport.isPending ? "Saving..." : "Save to Bank"}
                 </Button>
-              ) : null}
-              {importStatus === "saved" && data?.savedQuestionSetId ? (
+              )}
+              {importStatus === "saved" && data?.savedQuestionSetId && (
                 <Button size="sm" variant="outline" render={
                   <Link href={`/admin/question-sets/${data.savedQuestionSetId}`} />
                 }>
                   View Question Set
                 </Button>
-              ) : null}
+              )}
             </div>
           </div>
         </header>
@@ -242,9 +252,9 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
                     <Field>
                       <FieldLabel>Exam</FieldLabel>
                       <Select
-                        value={selectedExamId}
+                        value={selectedExamId ?? ""}
                         onValueChange={(value) =>
-                          form.setValue("examId", value, { shouldValidate: true })
+                          form.setValue("examId", value ?? "", { shouldValidate: true })
                         }
                       >
                         <SelectTrigger>
