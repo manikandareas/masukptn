@@ -169,6 +169,10 @@ export async function deleteQuestionImportQuestionsByImportId(importId: string) 
     .where(eq(questionImportQuestions.importId, importId));
 }
 
+export async function deleteQuestionImportById(id: string) {
+  await db.delete(questionImports).where(eq(questionImports.id, id));
+}
+
 export async function insertQuestionImportQuestions(
   questions: NewQuestionImportQuestion[],
 ) {
