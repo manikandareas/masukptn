@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -28,6 +28,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { Add01Icon, Delete02Icon, Upload04Icon, ArrowDown01Icon, Alert02Icon } from '@hugeicons/core-free-icons'
 
 import { MarkdownEditor } from './markdown-editor'
+import { MarkdownRenderer } from '@/components/markdown-renderer'
 import { AnswerKeyEditor } from './answer-key-editor'
 import { ExplanationEditor } from './explanation-editor'
 import { TagInput } from './tag-input'
@@ -77,6 +78,7 @@ const DIFFICULTIES: { value: Difficulty; label: string }[] = [
 ]
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'] as const
+const OPTION_IMAGE_REGEX = /!\[[^\]]*]\(([^)]+)\)/
 
 export function QuestionForm({
   question,
@@ -367,15 +369,32 @@ export function QuestionForm({
             <FieldDescription>
               Enter the answer options. Leave blank for options you do not need.
             </FieldDescription>
-            <div className="flex flex-col gap-2 mt-2">
+            <div className="flex flex-col gap-3 mt-2">
               {OPTION_LETTERS.map((letter, index) => (
-                <div key={letter} className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-muted-foreground w-6">{letter}.</span>
-                  <Input
-                    placeholder={`Option ${letter}`}
-                    className="flex-1 font-mono"
-                    {...register(`options.${index}`)}
-                  />
+                <div key={letter} className="flex items-start gap-3">
+                  <span className="text-xs font-mono text-muted-foreground w-6 pt-2">
+                    {letter}.
+                  </span>
+                  <div className="flex-1">
+                    {OPTION_IMAGE_REGEX.test(options[index] ?? '') && (
+                      <div className="mb-2 rounded border border-border/60 bg-muted/30 p-2">
+                        <MarkdownRenderer content={options[index] ?? ''} />
+                      </div>
+                    )}
+                    <Controller
+                      control={control}
+                      name={`options.${index}` as const}
+                      render={({ field }) => (
+                        <MarkdownEditor
+                          value={field.value ?? ''}
+                          onChange={field.onChange}
+                          placeholder={`Option ${letter}`}
+                          minHeight="min-h-[80px]"
+                          showValidation={false}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
