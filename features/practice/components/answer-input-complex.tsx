@@ -2,6 +2,7 @@
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { MarkdownRenderer } from '@/components/markdown-renderer'
 import type { PracticeAnswer } from '@/features/practice/types'
 
 type ComplexOption = {
@@ -41,7 +42,9 @@ export function AnswerInputComplex({
     <div className="space-y-4">
       {safeOptions.map((option, index) => (
         <div key={`${option.statement}-${index}`} className="rounded border border-border/60 bg-background/40 p-4">
-          <p className="mb-3 text-sm font-semibold text-foreground">{option.statement}</p>
+          <div className="mb-3">
+            <MarkdownRenderer content={option.statement} />
+          </div>
           <RadioGroup
             value={rows[index]?.selected ?? ''}
             onValueChange={(nextValue) => updateRow(index, nextValue)}

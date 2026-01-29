@@ -2,6 +2,7 @@
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { MarkdownRenderer } from '@/components/markdown-renderer'
 import type { PracticeAnswer } from '@/features/practice/types'
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -49,8 +50,12 @@ export function AnswerInputSingle({
               htmlFor={`option-${letter}-${index}`}
               className="text-sm leading-relaxed"
             >
-              <span className="mr-2 font-mono text-xs text-muted-foreground">{letter}</span>
-              {option}
+              <span className="mr-2 font-mono text-xs text-muted-foreground">
+                {letter}
+              </span>
+              <span className="block">
+                <MarkdownRenderer content={option} />
+              </span>
             </Label>
           </div>
         )
