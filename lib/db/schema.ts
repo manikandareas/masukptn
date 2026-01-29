@@ -340,6 +340,14 @@ export const questionImports = pgTable(
     ocrMetadata: jsonb("ocr_metadata").$type<{
       pageCount?: number;
       truncated?: boolean;
+      imageCount?: number;
+      images?: Array<{
+        page?: number;
+        index: number;
+        mimeType: string;
+        storagePath: string;
+        publicUrl: string;
+      }>;
     }>(),
     processedAt: timestamp("processed_at", { withTimezone: true }),
 
