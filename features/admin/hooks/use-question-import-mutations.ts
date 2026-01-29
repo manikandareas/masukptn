@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createAdminQuestionImportAction } from "@/features/admin/server/create-admin-question-import";
+import { deleteAdminQuestionImportAction } from "@/features/admin/server/delete-admin-question-import";
 import { processAdminQuestionImportAction } from "@/features/admin/server/process-admin-question-import";
 import { updateAdminQuestionImportAction } from "@/features/admin/server/update-admin-question-import";
 import { updateAdminQuestionImportQuestionAction } from "@/features/admin/server/update-admin-question-import-question";
@@ -30,6 +31,10 @@ async function updateImportQuestion(data: QuestionFormValues & { id: string }) {
 
 async function finalizeImport(id: string) {
   return finalizeAdminQuestionImportAction({ id });
+}
+
+async function deleteImport(id: string): Promise<{ success: boolean }> {
+  return deleteAdminQuestionImportAction({ id });
 }
 
 export function useCreateQuestionImport() {
@@ -102,6 +107,18 @@ export function useFinalizeQuestionImport() {
       queryClient.invalidateQueries({ queryKey: ["admin-question-sets"] });
       queryClient.invalidateQueries({ queryKey: ["admin-questions"] });
       queryClient.invalidateQueries({ queryKey: adminStatsQueryKey });
+    },
+  });
+}
+
+export function useDeleteQuestionImport() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteImport,
+    onSuccess: (_data, id) => {
+      queryClient.removeQueries({ queryKey: [...questionImportQueryKey, id] });
+      queryClient.invalidateQueries({ queryKey: questionImportsQueryKey });
     },
   });
 }

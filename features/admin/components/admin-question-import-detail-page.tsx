@@ -1,12 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,6 +48,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AdminLayout } from "@/features/admin/components/admin-layout";
 import { useQuestionImport } from "@/features/admin/hooks/use-question-import";
 import {
+  useDeleteQuestionImport,
   useFinalizeQuestionImport,
   useProcessQuestionImport,
   useUpdateQuestionImport,
@@ -72,6 +83,7 @@ function truncateText(value: string, maxLength = 80) {
 
 export function AdminQuestionImportDetailPage({ id }: { id: string }) {
   const router = useRouter();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { data, isLoading, error } = useQuestionImport(id);
   const { data: exams = [] } = useAdminExams();
   const { data: subtests = [] } = useAdminSubtests();
@@ -79,6 +91,7 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
   const updateImport = useUpdateQuestionImport();
   const processImport = useProcessQuestionImport();
   const finalizeImport = useFinalizeQuestionImport();
+  const deleteImport = useDeleteQuestionImport();
 
   const form = useForm<QuestionImportFormData>({
     resolver: zodResolver(questionImportFormSchema),
@@ -136,6 +149,16 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
       router.push(`/admin/question-sets/${result.id}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to finalize import");
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteImport.mutateAsync(id);
+      toast.success("Import deleted");
+      router.push("/admin/imports");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete import");
     }
   };
 
@@ -203,6 +226,14 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
                   View Question Set
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => setShowDeleteDialog(true)}
+                disabled={deleteImport.isPending}
+              >
+                Delete Import
+              </Button>
             </div>
           </div>
         </header>
@@ -318,6 +349,9 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
                     <h2 className="text-sm font-medium">OCR Preview</h2>
                     <Badge variant="outline" className="text-[10px]">
                       {data.ocrMetadata?.pageCount ?? 0} pages
+                      {data.ocrMetadata?.imageCount
+                        ? ` / ${data.ocrMetadata.imageCount} images`
+                        : ""}
                     </Badge>
                   </div>
                   <Textarea
@@ -412,6 +446,34 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
           </>
         ) : null}
       </div>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Import</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this import? This will remove the source
+              PDF and OCR images. This action cannot be undone.
+              {data?.savedQuestionSetId ? (
+                <span className="mt-2 block text-muted-foreground">
+                  This import was already saved. Deleting it will not delete the question
+                  set.
+                </span>
+              ) : null}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={deleteImport.isPending}
+            >
+              {deleteImport.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AdminLayout>
   );
 }
