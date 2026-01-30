@@ -108,6 +108,12 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
     name: "subtestId",
   });
 
+  const filteredSubtests = subtests.filter((subtest) =>
+    selectedExamId ? subtest.exam?.id === selectedExamId : true
+  );
+  const selectedExam = exams.find((e) => e.id === selectedExamId);
+  const selectedSubtest = filteredSubtests.find((s) => s.id === selectedSubtestId);
+
   useEffect(() => {
     if (!data) return;
     form.reset({
@@ -289,7 +295,9 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select exam" />
+                          <SelectValue placeholder="Select exam">
+                            {selectedExam ? `${selectedExam.code.toUpperCase()} - ${selectedExam.name}` : null}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {exams.map((exam) => (
@@ -314,16 +322,12 @@ export function AdminQuestionImportDetailPage({ id }: { id: string }) {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select subtest" />
+                          <SelectValue placeholder="Select subtest">
+                            {selectedSubtest ? `${selectedSubtest.code.toUpperCase()} - ${selectedSubtest.name}` : null}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          {subtests
-                            .filter((subtest) =>
-                              selectedExamId
-                                ? subtest.exam?.id === selectedExamId
-                                : true,
-                            )
-                            .map((subtest) => (
+                          {filteredSubtests.map((subtest) => (
                               <SelectItem key={subtest.id} value={subtest.id}>
                                 {subtest.code.toUpperCase()} - {subtest.name}
                               </SelectItem>

@@ -43,6 +43,9 @@ export function QuestionSetFiltersComponent({
     ? subtests.filter((s) => s.examId === filters.examId)
     : subtests
 
+  const selectedExam = exams.find(e => e.id === filters.examId)
+  const selectedSubtest = filteredSubtests.find(s => s.id === filters.subtestId)
+
   const handleExamChange = (value: string | null) => {
     onFiltersChange({
       ...filters,
@@ -78,7 +81,9 @@ export function QuestionSetFiltersComponent({
           disabled={isLoading}
         >
           <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="All Exams" />
+            <SelectValue placeholder="All Exams">
+              {filters.examId === 'all' || !filters.examId ? 'All Exams' : selectedExam ? `${selectedExam.code.toUpperCase()} - ${selectedExam.name}` : null}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Exams</SelectItem>
@@ -97,7 +102,9 @@ export function QuestionSetFiltersComponent({
           disabled={isLoading || filteredSubtests.length === 0}
         >
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="All Subtests" />
+            <SelectValue placeholder="All Subtests">
+              {filters.subtestId === 'all' || !filters.subtestId ? 'All Subtests' : selectedSubtest ? `${selectedSubtest.code.toUpperCase()} - ${selectedSubtest.name}` : null}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Subtests</SelectItem>

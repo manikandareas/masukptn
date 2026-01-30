@@ -39,6 +39,8 @@ export function QuestionFiltersComponent({
   subtests,
   isLoading,
 }: QuestionFiltersProps) {
+  const selectedSubtest = subtests.find(s => s.id === filters.subtestId)
+  
   const handleSubtestChange = (value: string | null) => {
     onFiltersChange({
       ...filters,
@@ -105,7 +107,9 @@ export function QuestionFiltersComponent({
           disabled={isLoading}
         >
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="All Subtests" />
+            <SelectValue placeholder="All Subtests">
+              {filters.subtestId === 'all' || !filters.subtestId ? 'All Subtests' : selectedSubtest ? `${selectedSubtest.code.toUpperCase()} - ${selectedSubtest.name}` : null}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Subtests</SelectItem>

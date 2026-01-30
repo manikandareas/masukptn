@@ -88,6 +88,9 @@ export function QuestionImportForm({
     ? subtests.filter((subtest) => subtest.exam?.id === examId)
     : [];
 
+  const selectedExam = exams.find(e => e.id === examId);
+  const selectedSubtest = filteredSubtests.find(s => s.id === subtestId);
+
   useEffect(() => {
     if (!examId) {
       setValue("subtestId", null);
@@ -141,7 +144,9 @@ export function QuestionImportForm({
             disabled={isSubmitting}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select exam" />
+              <SelectValue placeholder="Select exam">
+                {selectedExam ? `${selectedExam.code.toUpperCase()} - ${selectedExam.name}` : null}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {exams.map((exam) => (
@@ -164,7 +169,9 @@ export function QuestionImportForm({
             disabled={!examId || isSubmitting}
           >
             <SelectTrigger>
-              <SelectValue placeholder={examId ? "Select subtest" : "Select exam first"} />
+              <SelectValue placeholder={examId ? "Select subtest" : "Select exam first"}>
+                {selectedSubtest ? `${selectedSubtest.code.toUpperCase()} - ${selectedSubtest.name}` : null}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {filteredSubtests.map((subtest) => (
