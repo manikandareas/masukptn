@@ -215,6 +215,9 @@ export function QuestionSetForm({
 
   const excludeIds = useMemo(() => questions.map((q) => q.id), [questions])
 
+  const selectedExam = exams.find(e => e.id === examId)
+  const selectedSubtest = filteredSubtests.find(s => s.id === subtestId)
+
   return (
     <form onSubmit={handleFormSubmit} className="flex flex-col gap-6">
       {/* Status Badge */}
@@ -324,7 +327,9 @@ export function QuestionSetForm({
               onValueChange={handleExamChange}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select exam..." />
+                <SelectValue placeholder="Select exam...">
+                  {selectedExam ? `${selectedExam.code.toUpperCase()} - ${selectedExam.name}` : null}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {exams.map((exam) => (
@@ -348,7 +353,9 @@ export function QuestionSetForm({
               disabled={!examId || filteredSubtests.length === 0}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select subtest..." />
+                <SelectValue placeholder="Select subtest...">
+                  {subtestId === 'none' || !subtestId ? 'No specific subtest' : selectedSubtest ? `${selectedSubtest.code.toUpperCase()} - ${selectedSubtest.name}` : null}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">No specific subtest</SelectItem>

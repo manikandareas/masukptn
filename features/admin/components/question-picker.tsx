@@ -106,6 +106,8 @@ export function QuestionPicker({
     return subtests.filter((s) => s.exam?.id === examId)
   }, [subtests, examId])
 
+  const selectedSubtest = filteredSubtests.find(s => s.id === filters.subtestId)
+
   const handleToggleSelect = (questionId: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
@@ -218,13 +220,15 @@ export function QuestionPicker({
             onValueChange={handleSubtestChange}
           >
             <SelectTrigger className="w-[140px] h-8 text-xs">
-              <SelectValue placeholder="All Subtests" />
+              <SelectValue placeholder="All Subtests">
+                {filters.subtestId === 'all' || !filters.subtestId ? 'All Subtests' : selectedSubtest ? `${selectedSubtest.code.toUpperCase()} - ${selectedSubtest.name}` : null}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Subtests</SelectItem>
               {filteredSubtests.map((subtest) => (
                 <SelectItem key={subtest.id} value={subtest.id}>
-                  {subtest.code.toUpperCase()}
+                  {subtest.code.toUpperCase()} - {subtest.name}
                 </SelectItem>
               ))}
             </SelectContent>

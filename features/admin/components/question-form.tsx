@@ -193,6 +193,9 @@ export function QuestionForm({
     return acc
   }, {} as Record<string, SubtestOption[]>)
 
+  const selectedSubtestId = watch('subtestId')
+  const selectedSubtest = subtests.find(s => s.id === selectedSubtestId)
+
   return (
     <form onSubmit={handleFormSubmit} className="flex flex-col gap-6">
       {/* Status Badge */}
@@ -286,7 +289,9 @@ export function QuestionForm({
               onValueChange={(v) => setValue('subtestId', v ?? '', { shouldValidate: true })}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select subtest..." />
+                <SelectValue placeholder="Select subtest...">
+                  {selectedSubtest ? `${selectedSubtest.code.toUpperCase()} - ${selectedSubtest.name}` : null}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(subtestsByExam).map(([examName, examSubtests]) => (
