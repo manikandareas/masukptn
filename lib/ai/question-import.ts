@@ -287,7 +287,7 @@ export async function generateQuestionDraftsFromChunks(params: {
     });
 
     const outputQuestions = output?.questions ?? [];
-    const normalized = batch.map((chunk, index) => {
+    const normalized = batch.map((chunk, index): GeneratedQuestionDraft => {
       const candidate = outputQuestions[index];
       if (candidate) return candidate;
       const stem = chunk.text.trim();
