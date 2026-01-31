@@ -59,7 +59,7 @@ export function AdminQuestionNewPage() {
 
   return (
     <AdminLayout>
-      <div className="flex flex-col gap-6 p-6">
+      <div className="flex flex-col gap-6 p-6 max-w-4xl mx-auto">
         <header className="flex flex-col gap-2">
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             QUESTION_MANAGEMENT

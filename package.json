@@ -19,6 +19,7 @@
     "@hugeicons/core-free-icons": "^3.1.1",
     "@hugeicons/react": "^1.1.4",
     "@number-flow/react": "^0.5.11",
+    "@openrouter/ai-sdk-provider": "^2.1.1",
     "@platejs/markdown": "^52.1.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@supabase/ssr": "^0.8.0",

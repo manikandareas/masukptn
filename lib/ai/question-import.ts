@@ -2,13 +2,19 @@ import "server-only";
 
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
 const MISTRAL_OCR_URL =
   process.env.MISTRAL_OCR_URL ?? "https://api.mistral.ai/v1/ocr";
 const MISTRAL_OCR_MODEL =
   process.env.MISTRAL_OCR_MODEL ?? "mistral-ocr-latest";
+
+const openrouter = createOpenRouter({
+  apiKey: process.env.AI_GATEWAY_API_KEY,
+})
+
 const QUESTION_IMPORT_MODEL =
-  process.env.AI_QUESTION_IMPORT_MODEL ?? "anthropic/claude-haiku-4.5";
+  openrouter.chat("google/gemini-3-flash-preview")
 
 export const OCR_MAX_CHARS = 20000;
 const OCR_BATCH_MAX_CHARS = 12000;
